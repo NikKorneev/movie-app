@@ -4,7 +4,7 @@ import MovieCard from "./MovieCard";
 import Carousel from "react-native-reanimated-carousel";
 
 const Trending = () => {
-	const width = Dimensions.get("window").width;
+	const { width, height } = Dimensions.get("window");
 	return (
 		<View>
 			<View className="mt-8">
@@ -12,25 +12,22 @@ const Trending = () => {
 			</View>
 			<Carousel
 				loop
-				width={width}
-				height={width / 2}
-				autoPlay={true}
 				data={[...new Array(6).keys()]}
-				scrollAnimationDuration={1000}
-				onSnapToItem={(index) => console.log("current index:", index)}
-				renderItem={({ index }) => (
-					<View
-						style={{
-							flex: 1,
-							borderWidth: 1,
-							justifyContent: "center",
-						}}
-					>
-						<Text style={{ textAlign: "center", fontSize: 30 }}>
-							{index}
-						</Text>
-					</View>
-				)}
+				width={width}
+				height={height * 0.4}
+				snapEnabled={true}
+				pagingEnabled={true}
+				autoPlay={true}
+				autoPlayInterval={2500}
+				mode="parallax"
+				onConfigurePanGesture={(gestureChain) =>
+					gestureChain.activeOffsetX([-10, 10])
+				}
+				modeConfig={{
+					parallaxScrollingScale: 0.9,
+					parallaxScrollingOffset: 150,
+				}}
+				renderItem={({ index }) => <MovieCard item={{ index }} />}
 			/>
 		</View>
 	);

@@ -1,5 +1,6 @@
 import {
 	Platform,
+	ScrollView,
 	StatusBar,
 	Text,
 	TouchableOpacity,
@@ -11,7 +12,7 @@ import {
 	MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import Trending from "@/components/Trending";
-import Carousel from "react-native-reanimated-carousel";
+import MovieList from "@/components/MovieList";
 
 const isIOS = Platform.OS === "ios";
 
@@ -42,7 +43,11 @@ export default function Index() {
 				</TouchableOpacity>
 			</View>
 
-			<Trending />
+			<ScrollView>
+				<Trending />
+				<MovieList title="Upcoming" data={[]} extraStyles="mt-5" />
+				<MovieList title="Top Rated" data={[]} />
+			</ScrollView>
 		</SafeAreaView>
 	);
 }
