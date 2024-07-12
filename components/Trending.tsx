@@ -20,14 +20,16 @@ const Trending = () => {
 				autoPlay={true}
 				autoPlayInterval={2500}
 				mode="parallax"
-				onConfigurePanGesture={(gestureChain) =>
+				onConfigurePanGesture={(gestureChain: any) =>
 					gestureChain.activeOffsetX([-10, 10])
 				}
 				modeConfig={{
 					parallaxScrollingScale: 0.9,
 					parallaxScrollingOffset: 150,
 				}}
-				renderItem={({ index }) => <MovieCard item={{ index }} />}
+				renderItem={({ index }) => (
+					<MovieCard key={index} item={{ index }} />
+				)}
 			/>
 		</View>
 	);

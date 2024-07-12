@@ -9,6 +9,7 @@ import {
 import React from "react";
 import Carousel from "react-native-reanimated-carousel";
 import { useSharedValue } from "react-native-reanimated";
+import { router } from "expo-router";
 
 type MovieListProps = {
 	title: string;
@@ -18,6 +19,10 @@ type MovieListProps = {
 
 const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
 	const { width, height } = Dimensions.get("window");
+
+	const onPress = () => {
+		router.push(`/movie/${2}`);
+	};
 
 	return (
 		<View className={`mb-8 space-y-4 ${extraStyles}`}>
@@ -44,12 +49,12 @@ const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
 					{ movieName: "Dexter" },
 				]}
 				width={width * 0.35}
-				height={height * 0.22}
-				onConfigurePanGesture={(gestureChain) =>
+				height={height * 0.25}
+				onConfigurePanGesture={(gestureChain: any) =>
 					gestureChain.activeOffsetX([-10, 10])
 				}
 				renderItem={({ item, index }) => (
-					<Pressable key={index}>
+					<Pressable key={index} onPress={onPress}>
 						<View>
 							<Image
 								source={{
@@ -62,7 +67,7 @@ const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
 								}}
 							/>
 						</View>
-						<Text className="text-neutral-300 ml-1">
+						<Text className="text-neutral-300 ml-1 text-center">
 							{item.movieName.length > 14
 								? item.movieName.slice(0, 14) + "..."
 								: item.movieName || "something"}
