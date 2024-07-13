@@ -13,6 +13,7 @@ import {
 } from "react-native-heroicons/outline";
 import Trending from "@/components/Trending";
 import MovieList from "@/components/MovieList";
+import { router } from "expo-router";
 
 const isIOS = Platform.OS === "ios";
 
@@ -34,7 +35,7 @@ export default function Index() {
 				<Text className="text-white font-bold text-3xl">
 					<Text className="text-orange-400">M</Text>ovies
 				</Text>
-				<TouchableOpacity>
+				<TouchableOpacity onPress={() => router.push("/search")}>
 					<MagnifyingGlassIcon
 						size="30"
 						strokeWidth={2}

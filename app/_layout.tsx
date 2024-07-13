@@ -33,6 +33,10 @@ export default function RootLayout() {
 				name="actor/[actorId]"
 				options={{ headerShown: false, animation: "slide_from_right" }}
 			/>
+			<Stack.Screen
+				name="search"
+				options={{ headerShown: false, animation: "fade_from_bottom" }}
+			/>
 		</Stack>
 	);
 }
