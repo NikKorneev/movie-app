@@ -29,6 +29,10 @@ export default function RootLayout() {
 				name="movie/[id]"
 				options={{ headerShown: false, animation: "slide_from_right" }}
 			/>
+			<Stack.Screen
+				name="actor/[actorId]"
+				options={{ headerShown: false, animation: "slide_from_right" }}
+			/>
 		</Stack>
 	);
 }

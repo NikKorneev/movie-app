@@ -15,9 +15,15 @@ type MovieListProps = {
 	title: string;
 	data: any[];
 	extraStyles?: string;
+	hideSeeAll?: boolean;
 };
 
-const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
+const MovieList = ({
+	data,
+	title,
+	extraStyles,
+	hideSeeAll,
+}: MovieListProps) => {
 	const { width, height } = Dimensions.get("window");
 
 	const onPress = () => {
@@ -28,13 +34,16 @@ const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
 		<View className={`mb-8 space-y-4 ${extraStyles}`}>
 			<View className="mx-4 flex-row justify-between items-center">
 				<Text className="text-xl text-white">{title}</Text>
-				<TouchableOpacity>
-					<Text className="text-lg text-orange-400">See All</Text>
-				</TouchableOpacity>
+				{!hideSeeAll && (
+					<TouchableOpacity>
+						<Text className="text-lg text-orange-400">See All</Text>
+					</TouchableOpacity>
+				)}
 			</View>
 
 			<Carousel
 				loop
+				overscrollEnabled
 				style={{
 					width,
 					alignItems: "center",
@@ -50,6 +59,7 @@ const MovieList = ({ data, title, extraStyles }: MovieListProps) => {
 				]}
 				width={width * 0.35}
 				height={height * 0.25}
+				//@ts-ignore
 				onConfigurePanGesture={(gestureChain: any) =>
 					gestureChain.activeOffsetX([-10, 10])
 				}

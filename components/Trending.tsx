@@ -20,6 +20,7 @@ const Trending = () => {
 				autoPlay={true}
 				autoPlayInterval={2500}
 				mode="parallax"
+				// @ts-ignore:next-line
 				onConfigurePanGesture={(gestureChain: any) =>
 					gestureChain.activeOffsetX([-10, 10])
 				}
