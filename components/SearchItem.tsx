@@ -27,7 +27,7 @@ const SearchItem = ({ index, item }: SearchItem) => {
 				/>
 				<Text className="text-neutral-300 ml-1 text-center">
 					{movieName.length > 22
-						? movieName.slice(0, 22) + "..."
+						? movieName?.slice(0, 22) + "..."
 						: movieName}
 				</Text>
 			</View>

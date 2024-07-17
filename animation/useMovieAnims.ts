@@ -8,30 +8,53 @@ export const useMovieAnims = () => {
 	const mainOpacity = useSharedValue(0);
 
 	useEffect(() => {
-		movieName.value = withDelay(
-			300,
-			withTiming(movieName.value + 1, {
-				duration: 500,
-			})
-		);
-		releasedDate.value = withDelay(
-			500,
-			withTiming(releasedDate.value + 1, {
-				duration: 500,
-			})
-		);
-		genres.value = withDelay(
-			700,
-			withTiming(genres.value + 1, {
-				duration: 500,
-			})
-		);
-		mainOpacity.value = withDelay(
-			900,
-			withTiming(mainOpacity.value + 1, {
-				duration: 500,
-			})
-		);
+		movieName.value =
+			movieName.value === 1
+				? 1
+				: withDelay(
+						300,
+						withTiming(movieName.value + 1, {
+							duration: 500,
+						})
+				  );
+		releasedDate.value =
+			releasedDate.value === 1
+				? 1
+				: withDelay(
+						500,
+						withTiming(releasedDate.value + 1, {
+							duration: 500,
+						})
+				  );
+		genres.value =
+			genres.value === 1
+				? 1
+				: withDelay(
+						700,
+						withTiming(genres.value + 1, {
+							duration: 500,
+						})
+				  );
+		mainOpacity.value =
+			mainOpacity.value === 1
+				? 1
+				: withDelay(
+						900,
+						withTiming(mainOpacity.value + 1, {
+							duration: 500,
+						})
+				  );
+
+		let timer = setTimeout(() => {
+			movieName.value = 1;
+			releasedDate.value = 1;
+			genres.value = 1;
+			mainOpacity.value = 1;
+		}, 900);
+
+		return () => {
+			clearTimeout(timer);
+		};
 	}, []);
 
 	return { movieName, releasedDate, genres, mainOpacity };

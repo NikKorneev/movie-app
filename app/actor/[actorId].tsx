@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ChevronLeftIcon, HeartIcon } from "react-native-heroicons/outline";
 import { HeartIcon as HeartIconSolid } from "react-native-heroicons/solid";
 import Animated, {
@@ -20,10 +20,18 @@ import Animated, {
 } from "react-native-reanimated";
 import Divider from "@/components/Divider";
 import MovieList from "@/components/MovieList";
+import Loading from "@/components/Loading";
+import { useActorById, useActorMovies } from "@/hooks/useActor";
+import { SearchParams } from "@/types/SearchParams";
+import { IMAGE_URL_500 } from "@/api/getFns";
 
 const { width, height } = Dimensions.get("window");
 
-const SingleActor = () => {
+const SingleCast = () => {
+	const { actorId } = useLocalSearchParams<SearchParams>();
+	const { data, isLoading } = useActorById(actorId);
+	const { data: actorMovies, isLoading: isMoviesLoading } =
+		useActorMovies(actorId);
 	const nameOpacity = useSharedValue(0);
 	const imageOpacity = useSharedValue(0);
 	const transform = useSharedValue(-800);
@@ -31,24 +39,36 @@ const SingleActor = () => {
 	const [isFav, setIsFav] = useState(false);
 
 	useEffect(() => {
-		nameOpacity.value = withDelay(
-			300,
-			withTiming(nameOpacity.value + 1, {
-				duration: 600,
-			})
-		);
-		imageOpacity.value = withDelay(
-			100,
-			withTiming(imageOpacity.value + 1, {
-				duration: 600,
-			})
-		);
-		textOpacity.value = withDelay(
-			1000,
-			withTiming(textOpacity.value + 1, {
-				duration: 1000,
-			})
-		);
+		nameOpacity.value =
+			nameOpacity.value === 1
+				? 1
+				: withDelay(
+						300,
+						withTiming(nameOpacity.value + 1, {
+							duration: 600,
+						})
+				  );
+
+		imageOpacity.value =
+			imageOpacity.value === 1
+				? 1
+				: withDelay(
+						100,
+						withTiming(imageOpacity.value + 1, {
+							duration: 600,
+						})
+				  );
+
+		textOpacity.value =
+			textOpacity.value === 1
+				? 1
+				: withDelay(
+						1000,
+						withTiming(textOpacity.value + 1, {
+							duration: 1000,
+						})
+				  );
+
 		transform.value =
 			transform.value === 0
 				? 0
@@ -58,6 +78,17 @@ const SingleActor = () => {
 							duration: 800,
 						})
 				  );
+
+		const timer = setTimeout(() => {
+			nameOpacity.value = 1;
+			imageOpacity.value = 1;
+			textOpacity.value = 1;
+			transform.value = 1;
+		}, 800);
+
+		return () => {
+			clearTimeout(timer);
+		};
 	}, []);
 
 	return (
@@ -86,130 +117,140 @@ const SingleActor = () => {
 				</TouchableOpacity>
 			</SafeAreaView>
 
-			<View className="mt-6">
-				<Animated.View
-					className="flex-row px-4 mx-1 relative justify-center rounded-full"
-					style={{
-						elevation: 2,
-						shadowColor: "#353535",
-						shadowOffset: {
-							width: 5,
-							height: 5,
-						},
-						shadowOpacity: 0.5,
-						shadowRadius: 40.84,
-						opacity: imageOpacity,
-					}}
-				>
+			{isLoading ? (
+				<Loading />
+			) : (
+				<View className="mt-6">
 					<View
+						className="flex-row px-4 mx-1 relative justify-center rounded-full"
 						style={{
-							width: width * 0.74,
-							height: width * 0.74,
+							elevation: 2,
+							shadowColor: "#353535",
+							shadowOffset: {
+								width: 5,
+								height: 5,
+							},
+							shadowOpacity: 0.5,
+							shadowRadius: 40.84,
 						}}
-						className="items-center rounded-full overflow-hidden border border-neutral-500"
 					>
-						<Image
-							source={{
-								uri: "https://m.media-amazon.com/images/M/MV5BNGJmMWEzOGQtMWZkNS00MGNiLTk5NGEtYzg1YzAyZTgzZTZmXkEyXkFqcGdeQXVyMTE1MTYxNDAw._V1_.jpg",
-							}}
+						<View
 							style={{
-								height: height * 0.43,
 								width: width * 0.74,
+								height: width * 0.74,
 							}}
-							resizeMode="cover"
-						/>
+							className="items-center rounded-full overflow-hidden border border-neutral-500"
+						>
+							<Animated.Image
+								source={{
+									uri: IMAGE_URL_500 + data?.profile_path,
+								}}
+								style={{
+									height: height * 0.43,
+									width: width * 0.74,
+									opacity: imageOpacity,
+								}}
+								resizeMode="cover"
+							/>
+						</View>
+						<View
+							style={{
+								width: width * 0.74,
+								height: width * 0.74,
+							}}
+							className=" bg-neutral-800 z-[-1] right-0 justify-center items-start  absolute rounded-full overflow-hidden "
+						>
+							<Text>s</Text>
+						</View>
 					</View>
-					<View
+
+					<Animated.View
 						style={{
-							width: width * 0.74,
-							height: width * 0.74,
+							opacity: nameOpacity,
 						}}
-						className=" bg-neutral-800 z-[-1] right-0 justify-center items-start  absolute rounded-full overflow-hidden "
+						className="mt-4"
 					>
-						<Text>s</Text>
-					</View>
-				</Animated.View>
+						<Text className="text-3xl text-white font-bold text-center">
+							{data?.name}
+						</Text>
+						<Text className="text-base text-neutral-500 text-center">
+							{data?.place_of_birth}
+						</Text>
+					</Animated.View>
+					<Animated.View
+						style={{
+							transform: [{ translateX: transform }],
+						}}
+						className="mx-1 p-4 rounded-full mt-6 flex-row justify-between items-center bg-neutral-700"
+					>
+						<View className="  px-2 items-center">
+							<Text className="text-white font-semibold text-sm">
+								Gender
+							</Text>
+							<Text className="text-neutral-300 text-xs">
+								{data?.gender === 2 ? "Male" : "Female"}
+							</Text>
+						</View>
+						<Divider />
+						<View className=" px-2 items-center">
+							<Text className="text-white font-semibold text-sm">
+								Birthday
+							</Text>
+							<Text className="text-neutral-300 text-xs">
+								{data?.birthday || "Nothing was found"}
+							</Text>
+						</View>
+						<Divider />
+						<View className=" px-2 items-center">
+							<Text className="text-white font-semibold text-sm">
+								Known for
+							</Text>
+							<Text className="text-neutral-300 text-xs">
+								{data?.known_for_department ||
+									"Nothing was found"}
+							</Text>
+						</View>
+						<Divider />
+						<View className=" px-2 items-center text-sm">
+							<Text className="text-white font-semibold">
+								Popularity
+							</Text>
+							<Text className="text-neutral-300  text-xs">
+								{data?.popularity || "Nothing was found"}
+							</Text>
+						</View>
+					</Animated.View>
 
-				<Animated.View
-					style={{
-						opacity: nameOpacity,
-					}}
-					className="mt-4"
-				>
-					<Text className="text-3xl text-white font-bold text-center">
-						Keanu Reeves
-					</Text>
-					<Text className="text-base text-neutral-500 text-center">
-						Toronto, Kanada
-					</Text>
-				</Animated.View>
-				<Animated.View
-					style={{
-						transform: [{ translateX: transform }],
-					}}
-					className="mx-1 p-4 rounded-full mt-6 flex-row justify-between items-center bg-neutral-700"
-				>
-					<View className="  px-2 items-center">
-						<Text className="text-white font-semibold text-sm">
-							Gender
+					<Animated.View
+						style={{
+							opacity: textOpacity,
+						}}
+						className="my-6 mx-4 space-y-2"
+					>
+						<Text className="text-white text-lg">Biography</Text>
+						<Text className="text-neutral-400 tracking-wider">
+							{data?.biography || "Nothing was found"}
 						</Text>
-						<Text className="text-neutral-300 text-xs">Male</Text>
-					</View>
-					<Divider />
-					<View className=" px-2 items-center">
-						<Text className="text-white font-semibold text-sm">
-							Birthday
-						</Text>
-						<Text className="text-neutral-300 text-xs">
-							1964-09-02
-						</Text>
-					</View>
-					<Divider />
-					<View className=" px-2 items-center">
-						<Text className="text-white font-semibold text-sm">
-							Known for
-						</Text>
-						<Text className="text-neutral-300 text-xs">Acting</Text>
-					</View>
-					<Divider />
-					<View className=" px-2 items-center text-sm">
-						<Text className="text-white font-semibold">
-							Popularity
-						</Text>
-						<Text className="text-neutral-300  text-xs">64.23</Text>
-					</View>
-				</Animated.View>
+					</Animated.View>
 
-				<Animated.View
-					style={{
-						opacity: textOpacity,
-					}}
-					className="my-6 mx-4 space-y-2"
-				>
-					<Text className="text-white text-lg">Biography</Text>
-					<Text className="text-neutral-400 tracking-wider">
-						Lorem ipsum, dolor sit amet consectetur adipisicing
-						elit. Facilis aut voluptatibus placeat necessitatibus
-						vero beatae minus. Maxime magnam possimus quae, omnis
-						officia, nemo pariatur cupiditate in facere eligendi,
-						velit itaque.
-					</Text>
-				</Animated.View>
-
-				<Animated.View
-					style={{
-						opacity: textOpacity,
-					}}
-				>
-					<MovieList
-						hideSeeAll
-						data={[1, 2, 3, 4]}
-						title={"Movies"}
-					/>
-				</Animated.View>
-			</View>
+					{actorMovies && !isMoviesLoading ? (
+						<Animated.View
+							style={{
+								opacity: textOpacity,
+							}}
+						>
+							<MovieList
+								hideSeeAll
+								isLoading={isMoviesLoading}
+								data={actorMovies}
+								title={"Movies"}
+							/>
+						</Animated.View>
+					) : null}
+				</View>
+			)}
 		</ScrollView>
 	);
 };
 
-export default SingleActor;
+export default SingleCast;

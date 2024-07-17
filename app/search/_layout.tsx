@@ -16,7 +16,6 @@ const Search = () => {
 	const [text, setText] = useState("");
 	const path = usePathname();
 	const ref = useRef<TextInput | null>(null);
-	console.log(path);
 
 	const handleOnPress = () => {
 		if (!text) return;

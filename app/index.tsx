@@ -1,5 +1,7 @@
 import {
+	ActivityIndicator,
 	Platform,
+	RefreshControl,
 	ScrollView,
 	StatusBar,
 	Text,
@@ -12,12 +14,40 @@ import {
 	MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import Trending from "@/components/Trending";
-import MovieList from "@/components/MovieList";
+// import MovieList from "@/components/MovieList";
 import { router } from "expo-router";
+
+import {
+	useRatedMovies,
+	useTrendingMovies,
+	useUpcomingMovies,
+} from "@/hooks/useMovies";
+import { lazy, Suspense } from "react";
+
+const MovieList = lazy(() => import("@/components/MovieList"));
 
 const isIOS = Platform.OS === "ios";
 
 export default function Index() {
+	const { isFetching: isTrendingLoading, refetch: trendingRefetch } =
+		useTrendingMovies();
+	const {
+		data: upcomingData,
+		isFetching: isUpcomingLoading,
+		refetch: upcomingRefetch,
+	} = useUpcomingMovies();
+	const {
+		data: ratedData,
+		isFetching: isRatedLoading,
+		refetch: ratedRefetch,
+	} = useRatedMovies();
+
+	const handleRefresh = () => {
+		trendingRefetch();
+		upcomingRefetch();
+		ratedRefetch();
+	};
+
 	return (
 		<SafeAreaView
 			className={`h-full bg-neutral-800 ${isIOS ? "-mb-2" : "mb-3"} pt-3`}
@@ -44,10 +74,32 @@ export default function Index() {
 				</TouchableOpacity>
 			</View>
 
-			<ScrollView>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={isTrendingLoading}
+						onRefresh={handleRefresh}
+					/>
+				}
+			>
 				<Trending />
-				<MovieList title="Upcoming" data={[]} extraStyles="mt-5" />
-				<MovieList title="Top Rated" data={[]} />
+				<Suspense
+					fallback={
+						<ActivityIndicator size="large" color={"#f59133"} />
+					}
+				>
+					<MovieList
+						title="Upcoming"
+						data={upcomingData || []}
+						extraStyles="mt-5"
+						isLoading={isUpcomingLoading}
+					/>
+					<MovieList
+						title="Top Rated"
+						data={ratedData || []}
+						isLoading={isRatedLoading}
+					/>
+				</Suspense>
 			</ScrollView>
 		</SafeAreaView>
 	);
