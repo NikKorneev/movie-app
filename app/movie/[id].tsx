@@ -13,7 +13,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HeartIcon as HeartIconSolid } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { SearchParams } from "@/types/SearchParams";
-import { useMovieAnims } from "@/animation/useMovieAnims";
 import { useMovieById, useSimilarMoviesById } from "@/hooks/useMovies";
 import { IMAGE_URL_500 } from "@/api/getFns";
 import { useCast } from "@/hooks/useActor";
@@ -23,10 +22,9 @@ import Animated from "react-native-reanimated";
 const { width, height } = Dimensions.get("window");
 const CastCard = lazy(() => import("@/components/CastCard"));
 const MovieList = lazy(() => import("@/components/MovieList"));
-const SkeletonExpo = lazy(() => import("moti/build/skeleton/expo"));
 
 const SingleMovie = () => {
-	const [isFav, setIsFav] = useState(false);
+	// const [isFav, setIsFav] = useState(false);
 	const { id } = useLocalSearchParams<SearchParams>();
 	const { data, isLoading } = useMovieById(id);
 	const {
@@ -39,7 +37,6 @@ const SingleMovie = () => {
 		isFetching: isSimilarLoading,
 		isError: isSimilarError,
 	} = useSimilarMoviesById(id);
-	const { movieName, releasedDate } = useMovieAnims();
 
 	return (
 		<ScrollView className={"flex-1 bg-neutral-900"}>
@@ -60,13 +57,13 @@ const SingleMovie = () => {
 				</TouchableOpacity>
 
 				<View className="items-center gap-3">
-					<TouchableOpacity onPress={() => setIsFav(!isFav)}>
+					{/* <TouchableOpacity onPress={() => setIsFav(!isFav)}>
 						{isFav ? (
 							<HeartIconSolid size="35" color="red" />
 						) : (
 							<HeartIcon size="35" color="white" />
 						)}
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 					{data?.vote_average && (
 						<View className="bg-neutral-800 rounded-full">
 							<Text>
@@ -134,14 +131,9 @@ const SingleMovie = () => {
 							/>
 						</View>
 					) : ( */}
-					<Animated.Text
-						style={{
-							opacity: movieName,
-						}}
-						className="text-white text-center text-3xl font-bold tracking-wider"
-					>
+					<Text className="text-white text-center text-3xl font-bold tracking-wider">
 						{data?.title}
-					</Animated.Text>
+					</Text>
 					{/* )} */}
 
 					<Text className="text-neutral-400 font-semibold text-base text-center">

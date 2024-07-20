@@ -13,6 +13,7 @@ type MovieListProps = {
 	data: Movie[];
 	extraStyles?: string;
 	hideSeeAll?: boolean;
+	routeTo?: "upcoming" | "rated";
 	isLoading: boolean;
 };
 const { width, height } = Dimensions.get("window");
@@ -22,6 +23,7 @@ const MovieList = ({
 	extraStyles,
 	hideSeeAll,
 	isLoading,
+	routeTo,
 }: MovieListProps) => {
 	const { movieName } = useMovieAnims();
 	const onPress = (id: number) => {
@@ -33,7 +35,9 @@ const MovieList = ({
 			<View className="mx-4 flex-row justify-between items-center">
 				<Text className="text-xl text-white">{title}</Text>
 				{!hideSeeAll && (
-					<TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => router.push(`/all/${routeTo}`)}
+					>
 						<Text className="text-lg text-orange-400">See All</Text>
 					</TouchableOpacity>
 				)}

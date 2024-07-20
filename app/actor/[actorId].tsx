@@ -32,33 +32,11 @@ const SingleCast = () => {
 	const { data, isLoading } = useActorById(actorId);
 	const { data: actorMovies, isLoading: isMoviesLoading } =
 		useActorMovies(actorId);
-	const nameOpacity = useSharedValue(0);
-	const imageOpacity = useSharedValue(0);
 	const transform = useSharedValue(-800);
 	const textOpacity = useSharedValue(0);
-	const [isFav, setIsFav] = useState(false);
+	// const [isFav, setIsFav] = useState(false);
 
 	useEffect(() => {
-		nameOpacity.value =
-			nameOpacity.value === 1
-				? 1
-				: withDelay(
-						300,
-						withTiming(nameOpacity.value + 1, {
-							duration: 600,
-						})
-				  );
-
-		imageOpacity.value =
-			imageOpacity.value === 1
-				? 1
-				: withDelay(
-						100,
-						withTiming(imageOpacity.value + 1, {
-							duration: 600,
-						})
-				  );
-
 		textOpacity.value =
 			textOpacity.value === 1
 				? 1
@@ -80,11 +58,9 @@ const SingleCast = () => {
 				  );
 
 		const timer = setTimeout(() => {
-			nameOpacity.value = 1;
-			imageOpacity.value = 1;
-			textOpacity.value = 1;
-			transform.value = 1;
-		}, 800);
+			textOpacity.value + 1;
+			transform.value + 800;
+		});
 
 		return () => {
 			clearTimeout(timer);
@@ -108,13 +84,13 @@ const SingleCast = () => {
 						color={"white"}
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => setIsFav(!isFav)}>
+				{/* <TouchableOpacity onPress={() => setIsFav(!isFav)}>
 					{isFav ? (
 						<HeartIconSolid size="35" color="red" />
 					) : (
 						<HeartIcon size="35" color="white" />
 					)}
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</SafeAreaView>
 
 			{isLoading ? (
@@ -141,14 +117,13 @@ const SingleCast = () => {
 							}}
 							className="items-center rounded-full overflow-hidden border border-neutral-500"
 						>
-							<Animated.Image
+							<Image
 								source={{
 									uri: IMAGE_URL_500 + data?.profile_path,
 								}}
 								style={{
 									height: height * 0.43,
 									width: width * 0.74,
-									opacity: imageOpacity,
 								}}
 								resizeMode="cover"
 							/>
@@ -160,23 +135,18 @@ const SingleCast = () => {
 							}}
 							className=" bg-neutral-800 z-[-1] right-0 justify-center items-start  absolute rounded-full overflow-hidden "
 						>
-							<Text>s</Text>
+							<Text className="opacity-0">s</Text>
 						</View>
 					</View>
 
-					<Animated.View
-						style={{
-							opacity: nameOpacity,
-						}}
-						className="mt-4"
-					>
+					<View className="mt-4">
 						<Text className="text-3xl text-white font-bold text-center">
 							{data?.name}
 						</Text>
 						<Text className="text-base text-neutral-500 text-center">
 							{data?.place_of_birth}
 						</Text>
-					</Animated.View>
+					</View>
 					<Animated.View
 						style={{
 							transform: [{ translateX: transform }],
@@ -197,7 +167,7 @@ const SingleCast = () => {
 								Birthday
 							</Text>
 							<Text className="text-neutral-300 text-xs">
-								{data?.birthday || "Nothing was found"}
+								{data?.birthday || "Unknown"}
 							</Text>
 						</View>
 						<Divider />
@@ -206,8 +176,7 @@ const SingleCast = () => {
 								Known for
 							</Text>
 							<Text className="text-neutral-300 text-xs">
-								{data?.known_for_department ||
-									"Nothing was found"}
+								{data?.known_for_department || "Unknown"}
 							</Text>
 						</View>
 						<Divider />
@@ -216,7 +185,7 @@ const SingleCast = () => {
 								Popularity
 							</Text>
 							<Text className="text-neutral-300  text-xs">
-								{data?.popularity || "Nothing was found"}
+								{data?.popularity || "Unknown"}
 							</Text>
 						</View>
 					</Animated.View>

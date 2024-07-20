@@ -49,6 +49,20 @@ export default function RootLayout() {
 						animation: "fade_from_bottom",
 					}}
 				/>
+				<Stack.Screen
+					name="all/[genre]"
+					options={{
+						headerShown: false,
+						animation: "slide_from_right",
+					}}
+				/>
+				<Stack.Screen
+					name="menu"
+					options={{
+						headerShown: false,
+						animation: "slide_from_left",
+					}}
+				/>
 			</Stack>
 		</QueryClientProvider>
 	);

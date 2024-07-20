@@ -8,30 +8,33 @@ import {
 } from "@/api/getFns";
 import { useQuery } from "@tanstack/react-query";
 
-export const useTrendingMovies = () => {
+export const useTrendingMovies = (enabled: boolean = true) => {
 	return useQuery({
 		queryKey: ["TRENDING"],
 		queryFn: () => getMovies(TRENDING_MOVIES),
+		enabled,
 		select: (data) => {
 			return data.data.results;
 		},
 	});
 };
 
-export const useUpcomingMovies = () => {
+export const useUpcomingMovies = (enabled: boolean = true, page?: number) => {
 	return useQuery({
 		queryKey: ["UPCOMING"],
-		queryFn: () => getMovies(UPCOMING_MOVIES),
+		queryFn: () => getMovies(UPCOMING_MOVIES, page),
+		enabled,
 		select: (data) => {
 			return data.data.results;
 		},
 	});
 };
 
-export const useRatedMovies = () => {
+export const useRatedMovies = (enabled: boolean = true, page?: number) => {
 	return useQuery({
 		queryKey: ["RATED"],
-		queryFn: () => getMovies(RATED_MOVIES),
+		queryFn: () => getMovies(RATED_MOVIES, page),
+		enabled,
 		select: (data) => {
 			return data.data.results;
 		},

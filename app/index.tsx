@@ -1,5 +1,4 @@
 import {
-	ActivityIndicator,
 	Platform,
 	RefreshControl,
 	ScrollView,
@@ -14,7 +13,6 @@ import {
 	MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import Trending from "@/components/Trending";
-// import MovieList from "@/components/MovieList";
 import { router } from "expo-router";
 
 import {
@@ -22,9 +20,7 @@ import {
 	useTrendingMovies,
 	useUpcomingMovies,
 } from "@/hooks/useMovies";
-import { lazy, Suspense } from "react";
-
-const MovieList = lazy(() => import("@/components/MovieList"));
+import MovieList from "@/components/MovieList";
 
 const isIOS = Platform.OS === "ios";
 
@@ -57,11 +53,13 @@ export default function Index() {
 			<StatusBar barStyle={"light-content"} />
 
 			<View className="flex-row justify-between items-center mx-4">
-				<Bars3CenterLeftIcon
-					size="30"
-					strokeWidth={2}
-					color={"white"}
-				/>
+				<TouchableOpacity onPress={() => router.push("menu")}>
+					<Bars3CenterLeftIcon
+						size="30"
+						strokeWidth={2}
+						color={"white"}
+					/>
+				</TouchableOpacity>
 				<Text className="text-white font-bold text-3xl">
 					<Text className="text-orange-400">M</Text>ovies
 				</Text>
@@ -83,23 +81,20 @@ export default function Index() {
 				}
 			>
 				<Trending />
-				<Suspense
-					fallback={
-						<ActivityIndicator size="large" color={"#f59133"} />
-					}
-				>
-					<MovieList
-						title="Upcoming"
-						data={upcomingData || []}
-						extraStyles="mt-5"
-						isLoading={isUpcomingLoading}
-					/>
-					<MovieList
-						title="Top Rated"
-						data={ratedData || []}
-						isLoading={isRatedLoading}
-					/>
-				</Suspense>
+
+				<MovieList
+					title="Upcoming"
+					data={upcomingData || []}
+					extraStyles="mt-5"
+					routeTo="upcoming"
+					isLoading={isUpcomingLoading}
+				/>
+				<MovieList
+					title="Top Rated"
+					data={ratedData || []}
+					routeTo="rated"
+					isLoading={isRatedLoading}
+				/>
 			</ScrollView>
 		</SafeAreaView>
 	);

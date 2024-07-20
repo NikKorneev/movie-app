@@ -10,6 +10,7 @@ const MovieListSkeleton = () => {
 		<ScrollView
 			contentContainerStyle={{
 				justifyContent: "space-between",
+				flexDirection: "row",
 				gap: 7,
 				paddingTop: 15,
 			}}

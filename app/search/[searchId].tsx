@@ -1,16 +1,17 @@
-import { View, Text, FlatList, Pressable } from "react-native";
-import React, { useState } from "react";
+import { View, Text, FlatList } from "react-native";
+import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import SearchItem from "@/components/SearchItem";
 import { DocumentMagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Loading from "@/components/Loading";
+import { useSearch } from "@/hooks/useSearch";
+import { SearchParams } from "@/types/SearchParams";
 
 const SearchQuery = () => {
-	const data = [1, 2, 3, 4];
+	const { searchId } = useLocalSearchParams<SearchParams>();
+	const { data, isLoading } = useSearch(searchId);
+
 	const resAmount = data?.length;
-	const { searchId } = useLocalSearchParams();
-	const [isLoading, setisLoading] = useState(false);
-	// console.log(searchId);
 	if (isLoading) return <Loading custom="mt-[-100%]" />;
 	return (
 		<FlatList
@@ -27,10 +28,9 @@ const SearchQuery = () => {
 			}}
 			ListHeaderComponent={() => (
 				<View>
-					<Text className="text-white text-left font-semibold ml-1">
+					<Text className="text-white text-left font-semibold ml-1 pb-2">
 						{resAmount ? `Results (${resAmount})` : ""}
 					</Text>
-					<Text>{searchId}</Text>
 				</View>
 			)}
 			ListEmptyComponent={

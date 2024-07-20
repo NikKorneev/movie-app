@@ -9,11 +9,11 @@ import { ActorMovies } from "@/types/ActorMovies";
 const BASE_URL = `https://api.themoviedb.org/3/`;
 export const IMAGE_URL_500 = `https://image.tmdb.org/t/p/w500`;
 export const TRENDING_MOVIES = `${BASE_URL}trending/movie/day?language=en-US&api_key=${API_KEY}`;
-export const UPCOMING_MOVIES = `${BASE_URL}movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`;
-export const RATED_MOVIES = `${BASE_URL}movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`;
+export const UPCOMING_MOVIES = `${BASE_URL}movie/upcoming?api_key=${API_KEY}&language=en-US`;
+export const RATED_MOVIES = `${BASE_URL}movie/top_rated?api_key=${API_KEY}&language=en-US`;
 
-export const getMovies = (url: string) => {
-	return axios.get<MovieFetchResults>(url);
+export const getMovies = (url: string, page: number = 1) => {
+	return axios.get<MovieFetchResults>(url + `&page=${page}`);
 };
 
 export const getMovieById = (id: string) => {
@@ -46,5 +46,12 @@ export const getMoviesByActorId = (id: string) => {
 	return axios.get<ActorMovies>(
 		BASE_URL +
 			`person/${id}/movie_credits?language=en-US&api_key=${API_KEY}`
+	);
+};
+
+export const getMoviesBySearch = (query: string) => {
+	return axios.get<MovieFetchResults>(
+		BASE_URL +
+			`search/movie?query=${query}&include_adult=true&language=en-US&page=1&api_key=${API_KEY}`
 	);
 };

@@ -24,10 +24,11 @@ const Trending = () => {
 					height={height * 0.4}
 					snapEnabled={true}
 					pagingEnabled={true}
+					maxScrollDistancePerSwipe={2000}
 					mode="parallax"
 					// @ts-ignore:next-line
 					onConfigurePanGesture={(gestureChain: any) =>
-						gestureChain.activeOffsetX([-10, 10])
+						gestureChain.activeOffsetX([-50, 50])
 					}
 					modeConfig={{
 						parallaxScrollingScale: 0.9,
